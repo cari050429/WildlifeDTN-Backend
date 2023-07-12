@@ -101,7 +101,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8000',
     'http://192.168.1.65:3000',
     'http://192.168.1.127:3000', 
-    'https://wildlifedtn-backend.azurewebsites.net/',
+    'https://wildlifedtn-backend.azurewebsites.net',
 )
 
 CORS_ALLOWED_ORIGINS = [
