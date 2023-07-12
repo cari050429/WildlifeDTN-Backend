@@ -31,7 +31,6 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
-from django.conf import settings
 
 
 MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
