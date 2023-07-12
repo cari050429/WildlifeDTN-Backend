@@ -1,5 +1,8 @@
+from pathlib import Path
+import os
 from datetime import timedelta
 from django.conf import settings
+
 """
 Django settings for backendv1 project.
 
@@ -12,8 +15,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
-import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
