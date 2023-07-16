@@ -2,10 +2,6 @@ from pathlib import Path
 import os
 from datetime import timedelta
 from django.conf import settings
-<<<<<<< HEAD
-=======
-
->>>>>>> 817bf847a5d16d192fd83ea1f5381a4f75c09b30
 """
 Django settings for backendv1 project.
 
