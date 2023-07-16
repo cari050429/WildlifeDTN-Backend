@@ -1,5 +1,11 @@
+from pathlib import Path
+import os
 from datetime import timedelta
 from django.conf import settings
+<<<<<<< HEAD
+=======
+
+>>>>>>> 817bf847a5d16d192fd83ea1f5381a4f75c09b30
 """
 Django settings for backendv1 project.
 
@@ -12,8 +18,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
-import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,15 +31,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-pyo_m&a+yt#$iqexw8u5ud89yy9#h#jj0_hd_v+wg&i59zp^4%"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['*']
-from django.conf import settings
 
 
 MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
 
 # Application definition
 

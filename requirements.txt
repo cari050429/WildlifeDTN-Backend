@@ -1,0 +1,7 @@
+Django==3.2.7
+djangorestframework==3.12.4
+django-cors-headers
+djangorestframework_simplejwt
+rest_framework_simplejwt
+pytz
+psycopg2-binary
