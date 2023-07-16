@@ -1,7 +1,7 @@
 from rest_framework import generics 
 from rest_framework import permissions
-from .models import TemperatureData, HumidityData, PictureData
-from.serializers import TemperatureDataSerializer, HumidityDataSerializer, PictureDataSerializer
+from .models import TemperatureData, HumidityData, PictureData, Node, Sensor
+from.serializers import TemperatureDataSerializer, HumidityDataSerializer, PictureDataSerializer, NodeSerializer, SensorSerializer
 from .permissions import IsSuperuserOrReadOnly
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.http import JsonResponse
 import json 
 from rest_framework import status
-
+from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
@@ -20,28 +20,152 @@ from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
 import os
 from django.conf import settings
+import datetime
+from datetime import datetime
+import base64
+import io 
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.exceptions import ObjectDoesNotExist
+
+
+@csrf_exempt
+def post_node_sensor(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+
+        for item in data:
+            node_number = item.get('node_number')
+            location = item.get('location')
+            sensors = item.get('sensor')
+
+
+            try:
+                node = Node.objects.get(node_number=node_number)
+                if node.location != location:
+                    # Create a new Node if the location has changed
+                    node = Node.objects.create(node_number=node_number, location=location)
+            except Node.DoesNotExist:
+                # Create a new Node if it doesn't exist
+                node = Node.objects.create(node_number=node_number, location=location)
+
+            
+            Sensor.objects.update_or_create(
+                node=node,
+                sensor_name=sensors
+            )
+            distinct_sensor_count = Sensor.objects.values('sensor_name').distinct().count()
+            node.distinct_sensor_count = distinct_sensor_count
+
+            node.save()
+
+        return JsonResponse({'message': 'Tables populated successfully.'})
+
+    # Return an error response for other HTTP methods
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+from datetime import datetime
 
 @csrf_exempt
 def post_view(request):###different than the other views
     permission_classes=permissions.AllowAny
-    if request.method=='POST':
+    if request.method == 'POST':
         data = json.loads(request.body)
         for item in data:
-            temperature=item.get('temperature')
-            node_origination=item.get('node_origination')
-            date_created=item.get('date_created')
-            file_type=item.get('file_type')
-            dataid=item.get('dataid')
+            if 'temperature' in item:
+                temperature = item.get('temperature')
+                node_number = item.get('node_origination')
+                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                file_type = item.get('file_type')
+                dataid = item.get('dataid')
+                date_inputted = datetime.now()
+                time_difference = (date_inputted-date_created).total_seconds()
+                print(time_difference)
 
-            obj=TemperatureData(temperature=temperature, node_origination=node_origination, date_created=date_created, file_type=file_type, dataid=dataid)
+                try:
+                    node = Node.objects.get(node_number=node_number)
+                except Node.DoesNotExist:
+                    # Create a new Node if it doesn't exist
+                    node = Node.objects.create(node_number=node_number)
 
-            obj.save()
+                obj = TemperatureData.objects.create(
+                    temperature=temperature,
+                    node_origination=node,
+                    date_created=date_created,
+                    file_type=file_type,
+                    dataid=dataid,
+                    date_inputted=date_inputted,
+                    time_difference=time_difference,
+                
+                )
 
-        return JsonResponse({'message':'Your data has been updated'})
-    
+            elif 'humidity' in item:
+                humidity = item.get('humidity')
+                node_number = item.get('node_origination')
+                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                file_type = item.get('file_type')
+                dataid = item.get('dataid')
+                date_inputted = datetime.now()
+                time_difference = (date_inputted-date_created).total_seconds()
+                print(time_difference)
+
+                try:
+                    node = Node.objects.get(node_number=node_number)
+                except Node.DoesNotExist:
+                    # Create a new Node if it doesn't exist
+                    node = Node.objects.create(node_number=node_number)
+
+                obj = HumidityData.objects.create(
+                    humidity=humidity,
+                    node_origination=node,
+                    date_created=date_created,
+                    file_type=file_type,
+                    dataid=dataid,
+                    date_inputted=date_inputted,
+                    time_difference=time_difference,
+                )
+
+            elif 'picture' in item:
+                picture = item.get('picture')
+                picture=picture.strip('""')
+                print(picture)
+                decoded_image = base64.b64decode(picture)
+                node_number = item.get('node_origination')
+                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                file_type = item.get('file_type')
+                dataid = item.get('dataid')
+                date_inputted = datetime.now()
+                time_difference = (date_inputted-date_created).total_seconds()
+                print(time_difference)
+                image_file = io.BytesIO(decoded_image)
+
+                image_file = InMemoryUploadedFile(
+                    image_file,
+                     None,
+                     f'{dataid}.jpg',
+                    'image/jpeg',
+                    len(decoded_image),
+                    None
+    )
+
+                try:
+                    node = Node.objects.get(node_number=node_number)
+                except Node.DoesNotExist:
+                    node = Node.objects.create(node_number=node_number)
+
+                obj = PictureData.objects.create(
+                    picture=image_file,
+                    node_origination=node,
+                    date_created=date_created,
+                    file_type=file_type,
+                    dataid=dataid,
+                    date_inputted=date_inputted,
+                    time_difference=time_difference,
+                )
+
+        return JsonResponse({'message': 'Your data has been updated'})
+
     elif request.method == 'GET':
         return JsonResponse({'message': 'This is a GET request'})
- 
 
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -180,3 +304,14 @@ class PictureDetailData(generics.RetrieveAPIView): #to view the detailed data, w
     queryset=PictureData.objects.all()
     lookup_field='pk'
  
+class BlacklistTokenUpdateView(APIView):
+    permission_classes = [permissions.AllowAny]
+    authentication_classes=()
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh_token"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

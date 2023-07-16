@@ -1,4 +1,5 @@
 from datetime import timedelta
+from django.conf import settings
 """
 Django settings for backendv1 project.
 
@@ -34,7 +35,7 @@ from django.conf import settings
 
 
 MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
-MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
+MEDIA_URL = '/media/'
 
 # Application definition
 
@@ -75,7 +76,7 @@ SIMPLE_JWT = {
      'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
      'ROTATE_REFRESH_TOKENS': False,
      'BLACKLIST_AFTER_ROTATION': True,
-     'AUTH_HEADER_TYPES':('Bearer',),
+     'AUTH_HEADER_TYPES':('Bearer','JWT'),
 }
 
 MIDDLEWARE = [
@@ -107,7 +108,7 @@ CORS_ORIGIN_WHITELIST = (
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://localhost:3000',
-    'https://wildlifedtn-backend.azurewebsites.net/',
+    'https://wildlifedtn-backend.azurewebsites.net',
 ]
 
 CORS_ALLOW_CREDENTIALS=True
