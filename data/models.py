@@ -23,6 +23,7 @@ class TemperatureData(models.Model):
     node_origination = models.ForeignKey(Node, on_delete=models.CASCADE, to_field='node_number', null=True)
     date_created = models.DateTimeField(null=True)
     date_inputted= models.DateTimeField(null=True)
+    date_created_seconds = models.IntergerField(null=True)
     time_difference = models.IntegerField(null=True)
     file_type = models.CharField(max_length=50, null=True)
     dataid = models.IntegerField(null=True)
