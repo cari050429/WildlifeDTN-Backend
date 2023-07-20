@@ -40,6 +40,7 @@ def post_view(request):###different than the other views
                 location = item.get('location')
                 sensors = 'temperature'  ##COULD CAUSE PROBLEMS 
                 date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                date_created_seconds=date_created.total_seconds()
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
@@ -60,6 +61,7 @@ def post_view(request):###different than the other views
                     temperature=temperature,
                     node_origination=node,
                     date_created=date_created,
+                    date_created_seconds=date_created_seconds,
                     file_type=file_type,
                     dataid=dataid,
                     date_inputted=date_inputted,
@@ -82,6 +84,7 @@ def post_view(request):###different than the other views
                 location = item.get('location')
                 sensors = 'humidity'  ##COULD CAUSE PROBLEMS 
                 date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                date_created_seconds=date_created.total_seconds()
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
@@ -98,6 +101,7 @@ def post_view(request):###different than the other views
                     humidity=humidity,
                     node_origination=node,
                     date_created=date_created,
+                    date_created_seconds=date_created_seconds,
                     file_type=file_type,
                     dataid=dataid,
                     date_inputted=date_inputted,
@@ -123,6 +127,7 @@ def post_view(request):###different than the other views
                 location = item.get('location')
                 sensors = 'picture'  ##COULD CAUSE PROBLEMS 
                 date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                date_created_seconds=date_created.total_seconds
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
@@ -148,6 +153,7 @@ def post_view(request):###different than the other views
                     picture=image_file,
                     node_origination=node,
                     date_created=date_created,
+                    date_created_seconds=date_created_seconds,
                     file_type=file_type,
                     dataid=dataid,
                     date_inputted=date_inputted,
@@ -254,7 +260,9 @@ class ListData(generics.ListAPIView):
             for x in range(end_seconds):
                 queryset = queryset.filter(date_created_seconds=x)
         elif begin_seconds and not end_seconds:
-            for x in range(begin_seconds, max)
+            for x in range(begin_seconds, max):
+                queryset = queryset.filter(date_created_seconds=x)
+
             
         return queryset
     

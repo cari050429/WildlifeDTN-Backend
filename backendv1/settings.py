@@ -109,7 +109,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:3000',
     'http://localhost:3000',
     'https://wildlifedtn-backend.azurewebsites.net',
-    'https://yellow-island-0a33a8710.3.azurestaticapps.net/',
+    'https://yellow-island-0a33a8710.3.azurestaticapps.net',
 ]
 
 CORS_ALLOW_CREDENTIALS=True
