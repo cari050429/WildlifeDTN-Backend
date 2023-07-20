@@ -253,15 +253,15 @@ class ListData(generics.ListAPIView):
         if nodenumber:
             queryset = queryset.filter(node_origination=nodenumber)
         
-        if end_seconds and begin_seconds:
-            for x in range(begin_seconds, end_seconds):
-                queryset = queryset.filter(date_created_seconds=x)
-        elif end_seconds and not begin_seconds:
-            for x in range(end_seconds):
-                queryset = queryset.filter(date_created_seconds=x)
-        elif begin_seconds and not end_seconds:
-            for x in range(begin_seconds, max):
-                queryset = queryset.filter(date_created_seconds=x)
+        #if end_seconds and begin_seconds:
+        #    for x in range(begin_seconds, end_seconds):
+        #        queryset = queryset.filter(date_created_seconds=x)
+        #elif end_seconds and not begin_seconds:
+        #    for x in range(end_seconds):
+        #        queryset = queryset.filter(date_created_seconds=x)
+        #elif begin_seconds and not end_seconds:
+        #    for x in range(begin_seconds, max):
+        #        queryset = queryset.filter(date_created_seconds=x)
 
             
         return queryset
