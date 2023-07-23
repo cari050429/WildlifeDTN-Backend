@@ -37,7 +37,6 @@ def post_view(request):###different than the other views
             if 'temperature' in item:
                 temperature = item.get('temperature')
                 node_number = item.get('node_origination')
-                location = item.get('location')
                 sensors = 'temperature'  ##COULD CAUSE PROBLEMS 
                 date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
                 date_created_seconds=date_created.total_seconds()
