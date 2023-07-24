@@ -23,7 +23,6 @@ class TemperatureData(models.Model):
     node_origination = models.ForeignKey(Node, on_delete=models.CASCADE, to_field='node_number', null=True)
     date_created = models.DateTimeField(null=True)
     date_inputted= models.DateTimeField(null=True)
-    date_created_seconds = models.IntegerField(null=True)
     time_difference = models.IntegerField(null=True)
     file_type = models.CharField(max_length=50, null=True)
     dataid = models.IntegerField(null=True)
@@ -37,7 +36,6 @@ class HumidityData(models.Model):
     node_origination = models.ForeignKey(Node, on_delete=models.CASCADE, to_field='node_number', null=True)
     date_created = models.DateTimeField(null=True)
     date_inputted= models.DateTimeField(null=True)
-    date_created_seconds = models.IntegerField(null=True)
     time_difference = models.IntegerField(null=True)
     file_type = models.CharField(max_length=50, null=True)
     dataid = models.IntegerField(null=True)
@@ -51,11 +49,9 @@ class PictureData(models.Model):
     node_origination = models.ForeignKey(Node, on_delete=models.CASCADE, to_field='node_number', null=True)
     date_created = models.DateTimeField(null=True)
     date_inputted= models.DateTimeField(null=True)
-    date_created_seconds = models.IntegerField(null=True)
     time_difference = models.IntegerField(null=True)
     file_type = models.CharField(max_length=50, null=True)
     dataid = models.IntegerField(null=True)
 
     def __str__(self):
         return f"Picture Data ID: {self.pk}"
-
