@@ -8,7 +8,6 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
-from django.shortcuts import redirect
 from django.http import JsonResponse
 import json 
 from rest_framework import status
