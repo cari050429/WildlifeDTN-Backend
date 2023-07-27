@@ -27,6 +27,35 @@ import io
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
 
+def download(request):
+        datatype = self.request.GET.get('datatype')
+
+        if datatype=='temperature':
+            queryset= TemperatureData.objects.all()
+            serializer = TemperatureDataSerializer(queryset, many=True)
+        elif datatype=='humidity': 
+            queryset= HumidityData.objects.all()
+            serializer = HumidityDataSerializer(queryset, many=True)
+        else:  
+            queryset= PictureData.objects.all()
+            serializer = PictureDataSerializer(queryset, many=True)
+    
+        dataid = self.request.GET.get('dataid')
+        nodenumber = self.request.GET.get('nodenumber')
+        daterange = self.request.GET.get('daterange')
+    
+        if dataid:
+            queryset = queryset.filter(dataid=dataid)
+
+        if nodenumber:
+            queryset = queryset.filter(node_origination=nodenumber)
+
+        if daterange:
+            queryset = queryset.filter(date_created=daterange)
+
+
+        data = serializer.data
+        return JsonResponse(data, safe=False)
 
 @csrf_exempt
 def post_node_sensor(request):
