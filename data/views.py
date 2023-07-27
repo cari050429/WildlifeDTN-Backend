@@ -15,7 +15,7 @@ from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
-from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import os
 from django.conf import settings
