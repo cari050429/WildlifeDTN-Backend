@@ -34,7 +34,8 @@ ALLOWED_HOSTS = ['*']
 
 
 #MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
-MEDIA_URL = 'https://mediawildlife.blob.core.windows.net/media/'
+
+MEDIA_URL='https://mediawildlifedtn.blob.core.windows.net/media'
 
 # Application definition
 
