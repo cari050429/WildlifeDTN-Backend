@@ -65,7 +65,7 @@ def post_view(request):
             if 'temperature' in item:
                 temperature = item.get('temperature')
                 node_number = item.get('node_origination')
-                date_created = datetime.strptime(item.get('date_created'), '%y-%m-%d %H:%M:%S')
+                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
@@ -91,7 +91,7 @@ def post_view(request):
             elif 'humidity' in item:
                 humidity = item.get('humidity')
                 node_number = item.get('node_origination')
-                date_created = datetime.strptime(item.get('date_created'), '%y-%m-%d %H:%M:%S')
+                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
@@ -121,7 +121,7 @@ def post_view(request):
                 picture = picture.strip('""')
                 decoded_image = base64.b64decode(picture)
                 node_number = item.get('node_origination')
-                date_created = datetime.strptime(item.get('date_created'), '%y-%m-%d %H:%M:%S')
+                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
