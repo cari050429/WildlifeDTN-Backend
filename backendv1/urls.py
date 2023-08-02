@@ -14,3 +14,4 @@ urlpatterns = [
 
 if settings.DEBUG:#allows you to see the image for debugging purposes, for example http://127.0.0.1:8000/media/data_pictures/kitty.jpeg
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

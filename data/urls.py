@@ -19,5 +19,3 @@ urlpatterns=[
     path('logout/blacklist/', BlacklistTokenUpdateView.as_view(), name='blacklist'),
     #path('post/sensor-node/', post_node_sensor, name="sensor-node")
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

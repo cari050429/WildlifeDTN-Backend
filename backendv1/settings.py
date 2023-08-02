@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['*']
 
 
 MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
 
 # Application definition
 
