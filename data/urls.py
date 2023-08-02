@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import ListData,  DeleteData, LoginView, post_view, LogoutView, CheckAuthenticationView, PictureDetailData, HumidityDetailData, TemperatureDetailData, BlacklistTokenUpdateView
 from rest_framework_simplejwt import views as jwt_views
+from django.conf.urls.static import static
+
 
 urlpatterns=[
     path('temperature/<int:pk>',TemperatureDetailData.as_view(), name='tempdetail'),
@@ -17,3 +19,5 @@ urlpatterns=[
     path('logout/blacklist/', BlacklistTokenUpdateView.as_view(), name='blacklist'),
     #path('post/sensor-node/', post_node_sensor, name="sensor-node")
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
