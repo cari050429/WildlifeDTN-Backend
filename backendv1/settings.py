@@ -33,10 +33,6 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -55,6 +51,7 @@ INSTALLED_APPS = [
     'corsheaders',  # added the middleware
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist'
+    'storages'
 
 
 ]
@@ -189,3 +186,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# settings.py
+
+# Set up the default storage backend for media files
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+
+# Set the Azure Storage account name and key
+AZURE_ACCOUNT_NAME = 'mediawildlifedtn'
+AZURE_ACCOUNT_KEY = 'GP5ABaEi4oBqi+X5Vx30C6rjFa4H2HmupqOLlKW7+FkMAPVG2K2n8/N31jvU5kha2gpLfcY5JF40+AStyOVTXA=='
+
+# Set the Azure Storage container name where you want to store the media files (blobs)
+AZURE_CONTAINER = 'media'
