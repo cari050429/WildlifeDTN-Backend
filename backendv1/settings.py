@@ -33,7 +33,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-#MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
+#MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'
 
 
 DEFAULT_FILE_STORAGE = 'backendv1.storage_backends.AzureMediaStorage'
