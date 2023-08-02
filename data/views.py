@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.models import User
+from django.shortcuts import redirect
 from django.http import JsonResponse
 import json 
 from rest_framework import status
@@ -15,7 +16,7 @@ from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 from django.utils.decorators import method_decorator
 import os
 from django.conf import settings
@@ -26,87 +27,49 @@ import io
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
 
-def download(request):
-        datatype = self.request.GET.get('datatype')
-
-        if datatype=='temperature':
-            queryset= TemperatureData.objects.all()
-            serializer = TemperatureDataSerializer(queryset, many=True)
-        elif datatype=='humidity': 
-            queryset= HumidityData.objects.all()
-            serializer = HumidityDataSerializer(queryset, many=True)
-        else:  
-            queryset= PictureData.objects.all()
-            serializer = PictureDataSerializer(queryset, many=True)
-    
-        dataid = self.request.GET.get('dataid')
-        nodenumber = self.request.GET.get('nodenumber')
-        daterange = self.request.GET.get('daterange')
-    
-        if dataid:
-            queryset = queryset.filter(dataid=dataid)
-
-        if nodenumber:
-            queryset = queryset.filter(node_origination=nodenumber)
-
-        if daterange:
-            queryset = queryset.filter(date_created=daterange)
-
-
-        data = serializer.data
-        return JsonResponse(data, safe=False)
+import json
+import base64
+import io
+from datetime import datetime
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Node, Sensor, TemperatureData, HumidityData, PictureData
+from rest_framework import permissions
 
 @csrf_exempt
-def post_node_sensor(request):
+def post_view(request):
+    permission_classes = [permissions.AllowAny]
     if request.method == 'POST':
         data = json.loads(request.body)
-
         for item in data:
-            node_number = item.get('node_number')
-            location = item.get('location')
+            node_number = item.get('node_origination')
             sensors = item.get('sensor')
-
 
             try:
                 node = Node.objects.get(node_number=node_number)
-                if node.location != location:
-                    # Create a new Node if the location has changed
-                    node = Node.objects.create(node_number=node_number, location=location)
             except Node.DoesNotExist:
                 # Create a new Node if it doesn't exist
-                node = Node.objects.create(node_number=node_number, location=location)
+                node = Node.objects.create(node_number=node_number)
 
-            
-            Sensor.objects.update_or_create(
-                node=node,
-                sensor_name=sensors
-            )
-            distinct_sensor_count = Sensor.objects.values('sensor_name').distinct().count()
+
+            sensor, created = Sensor.objects.update_or_create(
+                        node=node,
+                        sensor_name=sensors
+                    )
+
+            distinct_sensor_count = Sensor.objects.filter(node=node).values('sensor_name').distinct().count()
             node.distinct_sensor_count = distinct_sensor_count
-
             node.save()
 
-        return JsonResponse({'message': 'Tables populated successfully.'})
-
-    # Return an error response for other HTTP methods
-    return JsonResponse({'error': 'Invalid request method.'}, status=405)
-
-from datetime import datetime
-
-@csrf_exempt
-def post_view(request):###different than the other views
-    permission_classes=permissions.AllowAny
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        for item in data:
             if 'temperature' in item:
                 temperature = item.get('temperature')
                 node_number = item.get('node_origination')
-                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                date_created = datetime.strptime(item.get('date_created'), '%y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
-                time_difference = (date_inputted-date_created).total_seconds()
+                time_difference = (date_inputted - date_created).total_seconds()
                 print(time_difference)
 
                 try:
@@ -123,17 +86,16 @@ def post_view(request):###different than the other views
                     dataid=dataid,
                     date_inputted=date_inputted,
                     time_difference=time_difference,
-                
                 )
 
             elif 'humidity' in item:
                 humidity = item.get('humidity')
                 node_number = item.get('node_origination')
-                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                date_created = datetime.strptime(item.get('date_created'), '%y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
-                time_difference = (date_inputted-date_created).total_seconds()
+                time_difference = (date_inputted - date_created).total_seconds()
                 print(time_difference)
 
                 try:
@@ -153,27 +115,27 @@ def post_view(request):###different than the other views
                 )
 
             elif 'picture' in item:
+                #data_string = request.body.decode('utf-8')
+                #item = json.loads(data_string)
                 picture = item.get('picture')
-                picture=picture.strip('""')
-                print(picture)
+                picture = picture.strip('""')
                 decoded_image = base64.b64decode(picture)
                 node_number = item.get('node_origination')
-                date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
+                date_created = datetime.strptime(item.get('date_created'), '%y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
-                time_difference = (date_inputted-date_created).total_seconds()
-                print(time_difference)
+                time_difference = (date_inputted - date_created).total_seconds()
                 image_file = io.BytesIO(decoded_image)
 
                 image_file = InMemoryUploadedFile(
                     image_file,
-                     None,
-                     f'{dataid}.jpg',
+                    None,
+                    f'{dataid}.jpg',
                     'image/jpeg',
                     len(decoded_image),
                     None
-    )
+                )
 
                 try:
                     node = Node.objects.get(node_number=node_number)
