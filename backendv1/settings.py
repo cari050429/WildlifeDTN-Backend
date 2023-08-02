@@ -27,16 +27,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-pyo_m&a+yt#$iqexw8u5ud89yy9#h#jj0_hd_v+wg&i59zp^4%"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = ['*']
 
 
-#MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media'
+#MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
 
-
-DEFAULT_FILE_STORAGE = 'backendv1.storage_backends.AzureMediaStorage'
+MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Application definition
