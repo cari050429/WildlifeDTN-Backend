@@ -33,8 +33,8 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 
-MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
-MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
+#MEDIA_ROOT = os.path.join(settings.BASE_DIR, 'media')
+MEDIA_URL = 'https://mediawildlife.blob.core.windows.net/media/'
 
 # Application definition
 
