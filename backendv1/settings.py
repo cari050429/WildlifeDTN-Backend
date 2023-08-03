@@ -42,7 +42,7 @@ AZURE_ACCOUNT_KEY = 'GP5ABaEi4oBqi+X5Vx30C6rjFa4H2HmupqOLlKW7+FkMAPVG2K2n8/N31jv
 AZURE_CONTAINER = 'media'
 DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 # Set MEDIA_ROOT to an empty string or a dummy path since it's not used with Azure Blob Storage
-MEDIA_ROOT = ''
+#MEDIA_ROOT = ''
 # Application definition
 
 INSTALLED_APPS = [
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "storages",
 
     # local
     'data.apps.DataConfig',  # adding the app
