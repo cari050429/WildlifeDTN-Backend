@@ -285,6 +285,12 @@ class DeleteData(generics.DestroyAPIView):
 
         super().perform_destroy(instance)
 
+class SensorData(generics.ListAPIView):         #changed
+    permission_classes = [permissions.AllowAny] #changed
+    serializer_class = SensorSerializer #changed
+    queryset=Sensor.objects.all()   #changed
+    lookup_field='pk'
+    
 class TemperatureDetailData(generics.RetrieveAPIView): #to view the detailed data, will be used after searching to see all the information of a certain picture 
     permission_classes = [permissions.AllowAny]
 
