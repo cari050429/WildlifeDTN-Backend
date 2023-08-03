@@ -36,6 +36,12 @@ ALLOWED_HOSTS = ['*']
 MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+
+# Azure Blob Storage settings
+AZURE_ACCOUNT_NAME = 'mediawildlifedtn'
+AZURE_ACCOUNT_KEY = 'GP5ABaEi4oBqi+X5Vx30C6rjFa4H2HmupqOLlKW7+FkMAPVG2K2n8/N31jvU5kha2gpLfcY5JF40+AStyOVTXA=='  # You can also use SAS tokens for authentication
+AZURE_CONTAINER = 'media'  # The container where your media files will be stored
 
 # Application definition
 
@@ -46,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "storages",
 
     # local
     'data.apps.DataConfig',  # adding the app
