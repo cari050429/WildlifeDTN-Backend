@@ -214,7 +214,7 @@ class ListData(generics.ListAPIView):
         else:  
             return PictureDataSerializer
     
-    def get_queryset(self):
+        def get_queryset(self):
         datatype = self.request.GET.get('datatype')
         queryset = None
 
@@ -238,20 +238,27 @@ class ListData(generics.ListAPIView):
             queryset = queryset.filter(node_origination=nodenumber)
         
         if begin_seconds and end_seconds:
-            
-            begin_datetime = datetime.strptime(begin_seconds, '%Y-%m-%d %H:%M:%S')
-            end_datetime = datetime.strptime(end_seconds, '%Y-%m-%d %H:%M:%S')
-            queryset = queryset.filter(date_created__range=(begin_datetime, end_datetime))
-            
+            try:
+                begin_datetime = datetime.strptime(begin_seconds, '%Y-%m-%d %H:%M:%S')
+                end_datetime = datetime.strptime(end_seconds, '%Y-%m-%d %H:%M:%S')
+                # Check if begin_datetime is before end_datetime
+                if begin_datetime > end_datetime:
+                    return JsonResponse({'error': 'Begin date must be before end date.'}, status=400)
+                queryset = queryset.filter(date_created__range=(begin_datetime, end_datetime))
+            except ValueError:
+                return JsonResponse({'error': 'Invalid date format.'}, status=400)
         elif end_seconds:
-            
-            end_datetime = datetime.strptime(end_seconds, '%Y-%m-%d %H:%M:%S')
-            queryset = queryset.filter(date_created__lte=end_datetime)
-            
+            try:
+                end_datetime = datetime.strptime(end_seconds, '%Y-%m-%d %H:%M:%S')
+                queryset = queryset.filter(date_created__lte=end_datetime)
+            except ValueError:
+                return JsonResponse({'error': 'Invalid date format.'}, status=400)
         elif begin_seconds:
-            
-            begin_datetime = datetime.strptime(begin_seconds, '%Y-%m-%d %H:%M:%S')
-            queryset = queryset.filter(date_created__gte=begin_datetime)
+            try:
+                begin_datetime = datetime.strptime(begin_seconds, '%Y-%m-%d %H:%M:%S')
+                queryset = queryset.filter(date_created__gte=begin_datetime)
+            except ValueError:
+                return JsonResponse({'error': 'Invalid date format.'}, status=400)
 
         return queryset
 
