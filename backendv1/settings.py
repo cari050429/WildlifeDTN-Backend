@@ -34,15 +34,8 @@ ALLOWED_HOSTS = ['*']
 
 
 # Set the base URL for serving media files from Azure Blob Storage
-MEDIA_URL = 'https://mediawildlifedtn.blob.core.windows.net/media'
-
-# Azure Blob Storage settings
-AZURE_ACCOUNT_NAME = 'mediawildlifedtn'
-AZURE_ACCOUNT_KEY = 'GP5ABaEi4oBqi+X5Vx30C6rjFa4H2HmupqOLlKW7+FkMAPVG2K2n8/N31jvU5kha2gpLfcY5JF40+AStyOVTXA=='
-AZURE_CONTAINER = 'media'
-
-# Set MEDIA_ROOT to an empty string or a dummy path since it's not used with Azure Blob Storage
-MEDIA_ROOT = ''
+MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Application definition
 
 INSTALLED_APPS = [
