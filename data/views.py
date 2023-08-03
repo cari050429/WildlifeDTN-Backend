@@ -26,57 +26,37 @@ import base64
 import io 
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.core.exceptions import ObjectDoesNotExist
-
-import json
-import base64
-import io
 from datetime import datetime
-from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import Node, Sensor, TemperatureData, HumidityData, PictureData
-from rest_framework import permissions
+from django.db.models import Max
+
 
 @csrf_exempt
-def post_view(request):
-    permission_classes = [permissions.AllowAny]
+def post_view(request):###different than the other views
+    permission_classes=permissions.AllowAny
     if request.method == 'POST':
         data = json.loads(request.body)
         for item in data:
-            node_number = item.get('node_origination')
-            sensors = item.get('sensor')
-
-            try:
-                node = Node.objects.get(node_number=node_number)
-            except Node.DoesNotExist:
-                # Create a new Node if it doesn't exist
-                node = Node.objects.create(node_number=node_number)
-
-
-            sensor, created = Sensor.objects.update_or_create(
-                        node=node,
-                        sensor_name=sensors
-                    )
-
-            distinct_sensor_count = Sensor.objects.filter(node=node).values('sensor_name').distinct().count()
-            node.distinct_sensor_count = distinct_sensor_count
-            node.save()
-
             if 'temperature' in item:
                 temperature = item.get('temperature')
                 node_number = item.get('node_origination')
+                location = item.get('location')
+                sensors = 'temperature'  ##COULD CAUSE PROBLEMS 
                 date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
-                time_difference = (date_inputted - date_created).total_seconds()
+                time_difference = (date_inputted-date_created).total_seconds()
                 print(time_difference)
 
                 try:
                     node = Node.objects.get(node_number=node_number)
+                    if node.location != location:
+                        # Create a new Node if the location has changed
+                        node = Node.objects.create(node_number=node_number, location=location)
                 except Node.DoesNotExist:
                     # Create a new Node if it doesn't exist
-                    node = Node.objects.create(node_number=node_number)
+                    node = Node.objects.create(node_number=node_number, location=location)
+
 
                 obj = TemperatureData.objects.create(
                     temperature=temperature,
@@ -86,16 +66,28 @@ def post_view(request):
                     dataid=dataid,
                     date_inputted=date_inputted,
                     time_difference=time_difference,
+                
                 )
+                
+                Sensor.objects.update_or_create(
+                node=node,
+                sensor_name=sensors
+                )
+
+                distinct_sensor_count = Sensor.objects.filter(node=node).values('sensor').distinct().count()
+                Node.num_sensors = distinct_sensor_count
+                Node.save()
 
             elif 'humidity' in item:
                 humidity = item.get('humidity')
                 node_number = item.get('node_origination')
+                location = item.get('location')
+                sensors = 'humidity'  ##COULD CAUSE PROBLEMS 
                 date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
-                time_difference = (date_inputted - date_created).total_seconds()
+                time_difference = (date_inputted-date_created).total_seconds()
                 print(time_difference)
 
                 try:
@@ -114,28 +106,40 @@ def post_view(request):
                     time_difference=time_difference,
                 )
 
+                Sensor.objects.update_or_create(
+                node=node,
+                sensor_name=sensors
+                )
+
+                distinct_sensor_count = Sensor.objects.filter(node=node).values('sensor').distinct().count()
+                Node.num_sensors = distinct_sensor_count
+                Node.save()
+
+
             elif 'picture' in item:
-                #data_string = request.body.decode('utf-8')
-                #item = json.loads(data_string)
                 picture = item.get('picture')
-                picture = picture.strip('""')
+                picture=picture.strip('""')
+                print(picture)
                 decoded_image = base64.b64decode(picture)
                 node_number = item.get('node_origination')
+                location = item.get('location')
+                sensors = 'picture'  ##COULD CAUSE PROBLEMS 
                 date_created = datetime.strptime(item.get('date_created'), '%Y-%m-%d %H:%M:%S')
                 file_type = item.get('file_type')
                 dataid = item.get('dataid')
                 date_inputted = datetime.now()
-                time_difference = (date_inputted - date_created).total_seconds()
+                time_difference = (date_inputted-date_created).total_seconds()
+                print(time_difference)
                 image_file = io.BytesIO(decoded_image)
 
                 image_file = InMemoryUploadedFile(
                     image_file,
-                    None,
-                    f'{dataid}.jpg',
+                     None,
+                     f'{dataid}.jpg',
                     'image/jpeg',
                     len(decoded_image),
                     None
-                )
+    )
 
                 try:
                     node = Node.objects.get(node_number=node_number)
@@ -202,47 +206,61 @@ class CheckAuthenticationView(APIView):
             return Response({'is Authenticated':'error'})
 
 
+from datetime import datetime
+
 class ListData(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_serializer_class(self):
         datatype = self.request.GET.get('datatype')
-        print(datatype)
-        if datatype=='temperature':
+        if datatype == 'temperature':
             return TemperatureDataSerializer
-        elif datatype=='humidity': 
+        elif datatype == 'humidity': 
             return HumidityDataSerializer
         else:  
             return PictureDataSerializer
     
-
     def get_queryset(self):
         datatype = self.request.GET.get('datatype')
         queryset = None
 
-        if datatype=='temperature':
-            queryset= TemperatureData.objects.all()
-        elif datatype=='humidity': 
-            queryset= HumidityData.objects.all()
+        if datatype == 'temperature':
+            queryset = TemperatureData.objects.all()
+        elif datatype == 'humidity': 
+            queryset = HumidityData.objects.all()
         else:  
-            queryset= PictureData.objects.all()
+            queryset = PictureData.objects.all()
     
         dataid = self.request.GET.get('dataid')
         nodenumber = self.request.GET.get('nodenumber')
-        daterange = self.request.GET.get('daterange')
-    
+        begin_seconds = self.request.GET.get('begin_seconds')
+        end_seconds = self.request.GET.get('end_seconds')
+        print("here")
+
         if dataid:
             queryset = queryset.filter(dataid=dataid)
 
         if nodenumber:
             queryset = queryset.filter(node_origination=nodenumber)
-
-        if daterange:
-            queryset = queryset.filter(date_created=daterange)
-
+        
+        if begin_seconds and end_seconds:
+            
+            begin_datetime = datetime.strptime(begin_seconds, '%Y-%m-%d %H:%M:%S')
+            end_datetime = datetime.strptime(end_seconds, '%Y-%m-%d %H:%M:%S')
+            queryset = queryset.filter(date_created__range=(begin_datetime, end_datetime))
+            
+        elif end_seconds:
+            
+            end_datetime = datetime.strptime(end_seconds, '%Y-%m-%d %H:%M:%S')
+            queryset = queryset.filter(date_created__lte=end_datetime)
+            
+        elif begin_seconds:
+            
+            begin_datetime = datetime.strptime(begin_seconds, '%Y-%m-%d %H:%M:%S')
+            queryset = queryset.filter(date_created__gte=begin_datetime)
 
         return queryset
-    
+
 
 class DeleteData(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -252,7 +270,7 @@ class DeleteData(generics.DestroyAPIView):
         queryset = None
 
         if datatype=='temperature':
-            print('here')
+            print(queryset)
             queryset= TemperatureData.objects.all()
         elif datatype=='humidity': 
             queryset= HumidityData.objects.all()
