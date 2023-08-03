@@ -34,7 +34,7 @@ ALLOWED_HOSTS = ['*']
 
 
 # Set the base URL for serving media files from Azure Blob Storage
-MEDIA_URL = 'https://mediawildlifedtn.blob.core.windows.net/media/'
+MEDIA_URL = 'https://mediawildlifedtn.blob.core.windows.net/media'
 
 # Azure Blob Storage settings
 AZURE_ACCOUNT_NAME = 'mediawildlifedtn'
