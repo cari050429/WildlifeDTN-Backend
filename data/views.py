@@ -283,13 +283,6 @@ class DeleteData(generics.DestroyAPIView):
             if os.path.exists(file_path):
                 os.remove(file_path)
 
-        if datatype == 'temperature' or datatype == 'humidity':
-            sensor = instance.node_origination.sensor_set.first()
-
-            if sensor:
-                sensor.delete()  # Delete the sensor only if it's the last one
-
-
         super().perform_destroy(instance)
 
 class TemperatureDetailData(generics.RetrieveAPIView): #to view the detailed data, will be used after searching to see all the information of a certain picture 
