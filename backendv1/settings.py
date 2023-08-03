@@ -31,6 +31,8 @@ DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
+
+
 MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -53,7 +55,6 @@ INSTALLED_APPS = [
     'corsheaders',  # added the middleware
     'rest_framework.authtoken',
     'rest_framework_simplejwt.token_blacklist'
-    'storages'
 
 
 ]
