@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ['*']
 MEDIA_URL = 'https://wildlifedtn-backend.azurewebsites.net/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-#DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
+DEFAULT_FILE_STORAGE = 'storages.backends.azure_storage.AzureStorage'
 
 # Azure Blob Storage settings
 AZURE_ACCOUNT_NAME = 'mediawildlifedtn'
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "storages",
+    #"storages",
 
     # local
     'data.apps.DataConfig',  # adding the app
