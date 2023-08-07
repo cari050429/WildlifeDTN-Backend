@@ -255,22 +255,6 @@ class ListData(generics.ListAPIView):
 
         return queryset
 
-class DeleteAllView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def delete(self, request, type):
-        print('imhere')
-        if type == 'temperature':
-            TemperatureData.objects.all().delete()
-        elif type == 'humidity':
-            HumidityData.objects.all().delete()
-        elif type == 'picture':
-            PictureData.objects.all().delete()
-        else:
-            return Response({'is Authenticated': 'success'})
-
-        return Response({'message': 'Data deleted successfully'})
-    
 class DeleteData(generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
