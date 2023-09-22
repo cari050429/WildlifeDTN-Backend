@@ -37,9 +37,9 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Node, Sensor, TemperatureData, HumidityData, PictureData
 from rest_framework import permissions
 
-@csrf_exempt
 def post_view(request):
-    permission_classes = [permissions.AllowAny]
+    #permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
     if request.method == 'POST':
         data = json.loads(request.body)
         for item in data:
